@@ -4,443 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SB RISK SIGNAL - 종목별 투자 위험 경보 커뮤니티</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         :root {
-            --bg-color: #06080c;
-            --card-bg: #11151d;
-            --card-hover: #151b26;
-            --text-main: #ffffff;
-            --text-muted: #9aa6b5;
-           
-            --primary-accent: #ff3d00;
-            --down-blue: #0076ff;      
-            --warning-yellow: #ffea00;
-           
+            --bg-color: #06080c; --card-bg: #11151d; --card-hover: #151b26; --text-main: #ffffff; --text-muted: #9aa6b5;
+            --primary-accent: #ff3d00; --down-blue: #0076ff; --warning-yellow: #ffea00; --safe-green: #00e676;
             --gemini-gradient: linear-gradient(135deg, #4285f4, #9b51e0, #e63946, #00f5d4, #4285f4);
         }
-
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-color);
-            font-family: 'Noto Sans KR', sans-serif;
-            color: var(--text-main);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* [상단 전광판] */
-        .ticker-wrap {
-            width: 100%; overflow: hidden;
-            background: linear-gradient(90deg, #090d16 0%, #151c2a 50%, #090d16 100%);
-            border-bottom: 2px solid #1f2635; padding: 14px 0;
-            display: flex; align-items: center; position: relative;
-        }
-        .ticker-wrap::before, .ticker-wrap::after {
-            content: ''; position: absolute; top: 0; width: 140px; height: 100%; z-index: 2;
-        }
-        .ticker-wrap::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
-        .ticker-wrap::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
-        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker-move 60s linear infinite; }
-        .ticker:hover { animation-play-state: paused; }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Noto Sans KR', sans-serif; color: var(--text-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        .ticker-wrap { width: 100%; overflow: hidden; background: linear-gradient(90deg, #090d16 0%, #151c2a 50%, #090d16 100%); border-bottom: 2px solid #1f2635; padding: 14px 0; display: flex; position: relative; }
+        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker-move 50s linear infinite; }
         @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-       
-        .ticker-item {
-            display: inline-flex; align-items: center; padding: 0 35px;
-            font-size: 14px; font-weight: 900; letter-spacing: -0.3px; border-right: 1px solid #2d384e;
-        }
+        .ticker-item { display: inline-flex; align-items: center; padding: 0 35px; font-size: 14px; font-weight: 900; border-right: 1px solid #2d384e; }
         .ticker-item .cat { font-size: 10px; background: #222c3d; padding: 2px 5px; border-radius: 4px; margin-right: 8px; color: #00b0ff; font-weight: 700; }
-        .ticker-item .name { margin-right: 10px; color: #ffffff; }
-        .ticker-item .val { font-variant-numeric: tabular-nums; margin-right: 8px; font-size: 15px; }
-       
-        .ticker-item.up { color: var(--primary-accent); text-shadow: 0 0 8px rgba(255, 61, 0, 0.4); }
-        .ticker-item.down { color: var(--down-blue); text-shadow: 0 0 8px rgba(0, 118, 255, 0.4); }
-
-        /* [헤더] */
-        header {
-            display: flex; justify-content: space-between; align-items: center; padding: 20px 40px;
-            background: rgba(17, 21, 29, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1f2635;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo {
-            font-size: 26px; font-weight: 900; letter-spacing: 1px;
-            background: linear-gradient(45deg, #ff3d00, #0076ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer;
-        }
-        .main-search-wrapper {
-            position: relative; display: flex; align-items: center; width: 320px; padding: 1px; border-radius: 10px; background: #1f2735;
-        }
-        .main-search-input {
-            width: 100%; background: #0b0f17; border: none; padding: 11px 14px 11px 40px; border-radius: 9px;
-            color: #ffffff; font-size: 14px; font-weight: 700; outline: none;
-        }
+        .ticker-item.up { color: var(--primary-accent); } .ticker-item.down { color: var(--down-blue); }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(17, 21, 29, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1f2635; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 26px; font-weight: 900; background: linear-gradient(45deg, #ff3d00, #0076ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
+        .main-search-wrapper { position: relative; display: flex; align-items: center; width: 320px; background: #1f2735; padding: 1px; border-radius: 10px; }
+        .main-search-input { width: 100%; background: #0b0f17; border: none; padding: 11px 14px 11px 40px; border-radius: 9px; color: #ffffff; outline: none; }
         .main-search-wrapper i { position: absolute; left: 14px; color: #00b0ff; }
-        .login-trigger-btn {
-            background: linear-gradient(135deg, #ff3d00 0%, #ba1a00 100%); color: white; border: none;
-            padding: 10px 24px; font-size: 14px; font-weight: 700; border-radius: 30px; cursor: pointer;
-        }
-
-        /* 메인 그리드 구조 (기본 PC 데스크톱 버전) */
-        .main-wrapper {
-            max-width: 1700px; margin: 30px auto; padding: 0 30px;
-            display: grid; grid-template-columns: 6fr 4fr; gap: 30px; align-items: start;
-        }
-       
-        .left-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-title {
-            font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 10px;
-            background: linear-gradient(45deg, #00b0ff, #ff3d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        /* 자산 카드 격자 */
-        .market-board-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px;
-            max-height: calc(100vh - 220px); overflow-y: auto; padding-right: 8px;
-        }
-        .market-board-grid::-webkit-scrollbar, .board-list::-webkit-scrollbar { width: 6px; }
-        .market-board-grid::-webkit-scrollbar-thumb, .board-list::-webkit-scrollbar-thumb { background: #1f2635; border-radius: 10px; }
-
-        .gemini-glow-container {
-            position: relative; border-radius: 16px; padding: 1.5px;
-            background: rgba(34, 44, 61, 0.4); transition: all 0.2s; cursor: pointer;
-        }
-        .gemini-glow-container:hover, .gemini-glow-container.active {
-            background: var(--gemini-gradient); background-size: 200% 200%; animation: gemini-laser 4s linear infinite;
-        }
+        .login-trigger-btn { background: linear-gradient(135deg, #ff3d00 0%, #ba1a00 100%); color: white; border: none; padding: 10px 24px; font-weight: 700; border-radius: 30px; cursor: pointer; }
+        .main-wrapper { max-width: 1700px; margin: 30px auto; padding: 0 30px; display: grid; grid-template-columns: 5.8fr 4.2fr; gap: 30px; }
+        .section-title { font-size: 24px; font-weight: 900; margin-bottom: 20px; background: linear-gradient(45deg, #00b0ff, #ff3d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
+        .market-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; max-height: calc(100vh - 220px); overflow-y: auto; }
+        .gemini-glow-container { position: relative; border-radius: 16px; padding: 1.5px; background: rgba(34, 44, 61, 0.4); cursor: pointer; }
+        .gemini-glow-container:hover, .gemini-glow-container.active { background: var(--gemini-gradient); background-size: 200% 200%; animation: gemini-laser 4s linear infinite; }
         @keyframes gemini-laser { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
         .stock-card { background: #11151d; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; }
         .stock-header { display: flex; justify-content: space-between; align-items: center; }
         .stock-title { font-size: 17px; font-weight: 900; color: #ffffff; }
         .market-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #1f2635; color: #00b0ff; font-weight: 700; }
-
-        .stock-price-box { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; }
-        .current-price { font-size: 21px; font-weight: 900; color: #ffffff; }
-        .price-change { font-size: 15px; font-weight: 800; color: var(--text-muted); }
-
-        .gemini-glow-container.up-style .current-price, .gemini-glow-container.up-style .price-change { color: var(--primary-accent); }
-        .gemini-glow-container.down-style .current-price, .gemini-glow-container.down-style .price-change { color: var(--down-blue); }
-
-        /* [우측 종목 전용 게시판] */
-        .forum-section-wrapper { position: sticky; top: 110px; height: calc(100vh - 220px); }
-        .forum-section {
-            background: var(--card-bg); border-radius: 16px; padding: 24px;
-            display: flex; flex-direction: column; height: 100%; border: 1px solid #1f2635; box-sizing: border-box;
-            position: relative;
-        }
-        .forum-header { border-bottom: 1px solid #1f2635; padding-bottom: 15px; margin-bottom: 15px; }
-        .forum-title { font-size: 18px; font-weight: 900; text-align: left; }
-        .forum-title span { color: #00b0ff; }
-       
-        .board-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
-        .board-item {
-            background: #151a24; border: 1px solid #202b3d; border-radius: 10px; padding: 16px;
-            cursor: pointer; transition: all 0.2s; text-align: left;
-        }
-        .board-item:hover { background: #1b2333; border-color: #00b0ff; transform: translateX(4px); }
-        .board-item .post-tag { font-size: 10px; color: var(--warning-yellow); font-weight: 700; margin-bottom: 6px; }
-        .board-item .post-title { font-size: 15px; font-weight: 700; color: #ffffff; line-height: 1.4; }
-        .board-item .post-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 12px; }
-       
-        /* 글쓰기 영역 */
-        .post-input-area { margin-top: 15px; border-top: 1px solid #1f2635; padding-top: 15px; }
-        .post-title-input {
-            width: 100%; background: #06080c; border: 1px solid #222c3d; border-radius: 8px;
-            padding: 10px 12px; color: white; font-size: 14px; margin-bottom: 8px; font-weight: 700; box-sizing: border-box;
-        }
-        .post-content-wrap { display: flex; gap: 10px; }
-        .post-text-input { flex: 1; background: #06080c; border: 1px solid #222c3d; border-radius: 8px; padding: 10px 12px; color: #e2e8f0; font-size: 13px; min-height: 44px; resize: none; box-sizing: border-box; }
-        .post-submit-btn { background: #00b0ff; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 14px; }
-
-        /* 본문 상세 보기 창 */
-        #post-detail-view {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #11151d;
-            border-radius: 16px; padding: 25px; display: none; z-index: 10; box-sizing: border-box; text-align: left;
-        }
-        .back-to-list { color: #00b0ff; cursor: pointer; font-size: 13px; font-weight: 700; margin-bottom: 20px; display: inline-block; }
-        .back-to-list i { margin-right: 5px; }
-        .detail-header-title { font-size: 20px; font-weight: 900; margin-bottom: 15px; color: white; line-height: 1.4; }
-        .detail-body-text { color: #cbd5e1; line-height: 1.6; font-size: 14px; background: #070a0f; padding: 16px; border-radius: 8px; min-height: 120px; }
-
-        /* [모바일 반응형 미디어 쿼리] */
-        @media (max-width: 1024px) {
-            header { padding: 15px 20px; flex-direction: column; gap: 15px; }
-            .main-search-wrapper { width: 100%; }
-            .login-trigger-btn { width: 100%; border-radius: 10px; }
-
-            .main-wrapper {
-                grid-template-columns: 1fr;
-                padding: 0 15px; margin: 15px auto; gap: 25px;
-            }
-
-            .market-board-grid {
-                max-height: 340px;
-            }
-
-            .forum-section-wrapper {
-                position: relative; top: 0; height: auto;
-            }
-           
-            .forum-section {
-                height: auto;
-                min-height: 480px;
-                padding: 20px;
-            }
-
-            .board-list {
-                overflow-y: visible;
-                max-height: none;
-                margin-bottom: 15px;
-            }
-        }
+        .stock-price-box { display: flex; justify-content: space-between; margin-top: 15px; font-size: 21px; font-weight: 900; }
+        .price-change { font-size: 14px; font-weight: 800; }
+        .risk-signal-bar { width: 100%; height: 5px; background: #1f2635; border-radius: 3px; margin-top: 12px; overflow: hidden; }
+        .risk-fill { height: 100%; }
+        .risk-label { font-size: 11px; font-weight: 700; margin-top: 6px; display: flex; justify-content: space-between; color: var(--text-muted); }
+        .up-style { color: var(--primary-accent); } .down-style { color: var(--down-blue); }
+        .right-section-wrapper { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 20px; }
+        .chart-container { height: 250px; background: #11151d; border-radius: 16px; border: 1px solid #1f2635; overflow: hidden; }
+        .forum-section { background: var(--card-bg); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; border: 1px solid #1f2635; height: calc(100vh - 430px); box-sizing: border-box; }
+        .forum-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2635; padding-bottom: 15px; margin-bottom: 15px; }
+        .forum-title { font-size: 18px; font-weight: 900; } .forum-title span { color: #00b0ff; }
+        .write-btn { background: #1f2635; border: 1px solid #313d54; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .board-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
+        .board-item { background: #151a24; border: 1px solid #202b3d; border-radius: 12px; padding: 16px; text-align: left; }
+        .item-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .item-user { font-weight: 700; color: #00b0ff; }
+        .item-title { font-size: 14px; font-weight: 700; line-height: 1.4; color: #ffffff; }
+        .write-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-box { background: #11151d; border: 1px solid #2a354a; border-radius: 20px; padding: 30px; width: 420px; }
+        .modal-box h3 { margin: 0 0 20px 0; font-weight: 900; }
+        .modal-input, .modal-textarea { width: 100%; background: #0b0f17; border: 1px solid #202b3d; color: white; border-radius: 8px; padding: 12px; box-sizing: border-box; margin-bottom: 15px; outline: none; font-family: inherit; }
+        .modal-textarea { height: 100px; resize: none; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
+        .m-btn { padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; }
+        .m-btn.cancel { background: #222; color: #aaa; } .m-btn.submit { background: var(--primary-accent); color: white; }
     </style>
 </head>
 <body>
-
     <div class="ticker-wrap">
-        <div class="ticker" id="global-ticker">
-            <div class="ticker-item up"><span class="cat">COIN</span><span class="name">비트코인(BTC)</span><span class="val">132,450,000원</span><span>▲ 1.25%</span></div>
-            <div class="ticker-item down"><span class="cat">COIN</span><span class="name">리플(XRP)</span><span class="val">3,240원</span><span>▼ 0.52%</span></div>
-            <div class="ticker-item up"><span class="cat">COIN</span><span class="name">이더리움(ETH)</span><span class="val">4,850,000원</span><span>▲ 0.81%</span></div>
-            <div class="ticker-item"><span class="cat">FOREX</span><span class="name">유로 (EUR/USD)</span><span class="val">1.0842</span></div>
-            <div class="ticker-item down"><span class="cat">FOREX</span><span class="name">엔화 (USD/JPY)</span><span class="val">154.20</span></div>
-            <div class="ticker-item"><span class="cat">FOREX</span><span class="name">파운드 (GBP/USD)</span><span class="val">1.2650</span></div>
-            <div class="ticker-item"><span class="cat">FOREX</span><span class="name">호주달러 (AUD/USD)</span><span class="val">0.6580</span></div>
-            <div class="ticker-item"><span class="cat">FOREX</span><span class="name">캐나다달러 (USD/CAD)</span><span class="val">1.3520</span></div>
-            <div class="ticker-item"><span class="cat">FOREX</span><span class="name">프랑 (USD/CHF)</span><span class="val">0.8840</span></div>
-            <div class="ticker-item up"><span class="cat">FOREX</span><span class="name">위안화 (USD/CNY)</span><span class="val">7.2340</span></div>
+        <div class="ticker">
+            <div class="ticker-item up"><span class="cat">외환</span><span>AUD/USD</span>&nbsp;<span class="val">0.6580</span></div>
+            <div class="ticker-item up"><span class="cat">외환</span><span>USD/CAD</span>&nbsp;<span class="val">1.3520</span></div>
+            <div class="ticker-item down"><span class="cat">외환</span><span>USD/CHF</span>&nbsp;<span class="val">0.8840</span></div>
+            <div class="ticker-item up"><span class="cat">외환</span><span>USD/CNY</span>&nbsp;<span class="val">7.2340</span></div>
         </div>
     </div>
-
     <header>
-        <div class="logo" onclick="location.reload()">SB RISK SIGNAL</div>
-        <div class="main-search-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" class="main-search-input" id="integrated-search" placeholder="국내/미국 주식, 코인, 환율, ETF 검색..." oninput="filterAssets()">
-        </div>
+        <div class="logo">SB RISK SIGNAL</div>
+        <div class="main-search-wrapper"><i class="fa-solid fa-magnifying-glass"></i><input type="text" class="main-search-input" placeholder="검색..."></div>
         <button class="login-trigger-btn">간편 로그인</button>
     </header>
-
     <div class="main-wrapper">
-        <div>
-            <div class="left-section-header">
-                <div class="section-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--primary-accent)"></i> 실시간 리스크 감지 마켓</div>
-            </div>
-            <div class="market-board-grid" id="asset-grid"></div>
-        </div>
-
-        <div class="forum-section-wrapper">
-            <div class="forum-section">
-                <div class="forum-header">
-                    <div class="forum-title"><span id="forum-target-name">테슬라</span> 실시간 토론판</div>
-                </div>
-
-                <div class="board-list" id="post-list-target"></div>
-
-                <div id="post-detail-view">
-                    <span class="back-to-list" onclick="closePost()"><i class="fa-solid fa-chevron-left"></i> 목록으로 가기</span>
-                    <div class="detail-header-title" id="detail-title">제목</div>
-                    <div class="detail-body-text" id="detail-content">내용</div>
-                    <div style="margin-top:20px; font-size:12px; color:var(--text-muted)">
-                        <i class="fa-regular fa-user"></i> 제보자: <span id="detail-author" style="color:white; font-weight:700;">익명</span>
-                    </div>
-                </div>
-
-                <div class="post-input-area">
-                    <input type="text" class="post-title-input" id="new-post-title" placeholder="글 제목을 입력하세요...">
-                    <div class="post-content-wrap">
-                        <textarea class="post-text-input" id="new-post-content" placeholder="토론 및 위험 상세 내용을 공유해주세요..."></textarea>
-                        <button class="post-submit-btn" onclick="submitPost()">등록</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const assetList = [
-            { id:'TSLA', name:'테슬라', cat:'미국주식', price: 174.50, change: -2.34 },
-            { id:'SAMSUNG', name:'삼성전자', cat:'한국주식', price: 76200, change: 1.45 },
-            { id:'NVDA', name:'엔비디아', cat:'미국주식', price: 945.30, change: 3.12 },
-            { id:'BTC', name:'비트코인', cat:'암호화폐', price: 132450000, change: 1.25 },
-            { id:'SKHYNIX', name:'SK하이닉스', cat:'한국주식', price: 194200, change: -0.85 },
-            { id:'XRP', name:'리플', cat:'암호화폐', price: 3240, change: -0.52 },
-            { id:'ETH', name:'이더리움', cat:'암호화폐', price: 4850000, change: 0.81 },
-            { id:'KOSPI', name:'코스피 지수', cat:'국내지수', price: 2724.50, change: 0.15 },
-            { id:'USDKRW', name:'원/달러 환율', cat:'고정환율', price: 1365.50, change: 0.22 },
-            { id:'SCHD', name:'SCHD ETF', cat:'미국ETF', price: 78.42, change: -0.12 }
-        ];
-
-        const initialMockPosts = {
-            TSLA: [
-                { title: "테슬라 FSD 규제 강화 리스크 터졌네요", content: "미국 교통국의 자율주행 규제 강도가 심상치 않습니다. 단기 차트 고점 신호와 맞물려 급락 위험이 있어 보입니다.", author: "서학개미팀", time: "방금 전" },
-                { title: "인도 공장 설립 지연 악재 가능성 공유합니다", content: "인도 정부와의 관세 협상이 난항을 겪고 있어 기가팩토리 설립이 생각보다 오래 지연될 리스크가 상존합니다.", author: "차트마스터", time: "10분 전" }
-            ],
-            SAMSUNG: [
-                { title: "삼성전자 HBM 공급망 승인 지연 루머 체크", content: "엔비디아향 퀄테스트 승인이 예상보다 연기된다는 내부 찌라시가 돌고 있습니다. 일시적 수급 이탈 조심하세요.", author: "반도체주주", time: "2분 전" },
-                { title: "외국인 공매도 포지션 전환 포착", content: "최근 3일간 외인 창구에서 대규모 숏포지션 구축 정황이 보입니다. 단기 하방 압력 리스크 대응 준비하셔야 합니다.", author: "리스크헌터", time: "1시간 전" }
-            ],
-            BTC: [
-                { title: "비트코인 고래 지갑 대규모 거래소 입금 위험신호", content: "미국 휴면 고래 지갑에서 거래소로 5,000 BTC가 이체되었습니다. 강한 매도 벽이 생길 위험이 농후합니다.", author: "온체인분석", time: "5분 전" }
-            ],
-            XRP: [
-                { title: "리플 소송 관련 최종 합의안 일정 조율 소식", content: "SEC와의 소송 벌금 합의 조율 단계에서 단기 변동성이 엄청나게 커질 것 같습니다. 선물 거래하시는 분들 청산 조심하세요.", author: "XRP홀더", time: "12일 전" }
-            ],
-            ETH: [
-                { title: "이더리움 가스비 급감... 네트워크 활성도 저하 우려", content: "레이어2 활성화로 메인넷 가스비가 역대 최저 수준입니다. 소각량이 줄어들면서 인플레이션 압력이 생길 수 있습니다.", author: "이더리움랩스", time: "30분 전" }
-            ]
-        };
-
-        let currentAsset = 'TSLA';
-
-        const grid = document.getElementById('asset-grid');
-        grid.innerHTML = assetList.map(a => {
-            const upDownClass = a.change >= 0 ? 'up-style' : 'down-style';
-            return `
-                <div class="gemini-glow-container ${upDownClass}" id="wrapper-${a.id}" data-name="${a.name}" data-ticker="${a.id}" onclick="selectAsset('${a.id}', '${a.name}')">
+        <section>
+            <div class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> 실시간 리스크 감지 마켓</div>
+            <div class="market-board-grid" id="market-grid">
+                <!-- 1. 테슬라 -->
+                <div class="gemini-glow-container up-style active" id="wrapper-tsla" onclick="changeAsset('NASDAQ:TSLA', '테슬라')">
                     <div class="stock-card">
-                        <div class="stock-header">
-                            <div><span class="stock-title">${a.name}</span><span style="font-size:11px; margin-left:5px; color:var(--text-muted)">${a.id}</span></div>
-                            <span class="market-tag">${a.cat}</span>
-                        </div>
-                        <div class="stock-price-box">
-                            <span class="current-price" id="price-${a.id}">${a.price.toLocaleString()}</span>
-                            <span class="price-change" id="change-${a.id}">${a.change >= 0 ? '+' : ''}${a.change}%</span>
-                        </div>
+                        <div class="stock-header"><span class="stock-title">테슬라 <span style="font-size:11px;color:var(--text-muted)">TSLA</span></span><span class="market-tag">미국주식</span></div>
+                        <div class="stock-price-box"><span id="price-tsla">253,024</span><span class="price-change" id="change-tsla">+48.34%</span></div>
+                        <div class="risk-signal-bar"><div class="risk-fill" style="width: 95%; background: var(--primary-accent);"></div></div>
+                        <div class="risk-label"><span>위험도 레벨</span><span style="color:var(--primary-accent)">과열/위험</span></div>
                     </div>
                 </div>
-            `;
-        }).join('');
-
-        window.addEventListener('DOMContentLoaded', () => {
-            selectAsset('TSLA', '테슬라');
-        });
-
-        function selectAsset(id, name) {
-            currentAsset = id;
-            document.querySelectorAll('.gemini-glow-container').forEach(c => c.classList.remove('active'));
-            const activeCard = document.getElementById(`wrapper-${id}`);
-            if(activeCard) activeCard.classList.add('active');
-           
-            document.getElementById('forum-target-name').innerText = name;
-            closePost();
-            renderBoardList();
-           
-            if (window.innerWidth <= 1024) {
-                document.querySelector('.forum-section-wrapper').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function renderBoardList() {
-            const targetList = document.getElementById('post-list-target');
-            if(!targetList) return;
-
-            const posts = initialMockPosts[currentAsset] || [];
-
-            if(posts.length === 0) {
-                targetList.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding-top: 50px; font-size: 14px;"><i class="fa-regular fa-comment-dots" style="font-size:24px; display:block; margin-bottom:10px; color:#3a4454;"></i> [${document.getElementById('forum-target-name').innerText}] 종목에 아직 작성된 글이 없습니다.<br>첫 번째 대화를 시작해 보세요!</div>`;
-                return;
-            }
-
-            targetList.innerHTML = '';
-
-            posts.forEach((p) => {
-                const item = document.createElement('div');
-                item.className = 'board-item';
-                item.innerHTML = `
-                    <div class="post-tag">#실시간토론 #${currentAsset}</div>
-                    <div class="post-title">${p.title}</div>
-                    <div class="post-meta"><span><i class="fa-regular fa-user"></i> ${p.author}</span><span>${p.time}</span></div>
-                `;
-                item.addEventListener('click', () => {
-                    viewPost(p.title, p.content, p.author);
-                });
-                targetList.appendChild(item);
-            });
-        }
-
-        function viewPost(title, content, author) {
-            document.getElementById('detail-title').innerText = title;
-            document.getElementById('detail-content').innerText = content;
-            document.getElementById('detail-author').innerText = author;
-            document.getElementById('post-detail-view').style.display = 'block';
-           
-            if (window.innerWidth <= 1024) {
-                document.getElementById('post-detail-view').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function closePost() {
-            document.getElementById('post-detail-view').style.display = 'none';
-        }
-
-        function submitPost() {
-            const titleEl = document.getElementById('new-post-title');
-            const contentEl = document.getElementById('new-post-content');
-           
-            if(!titleEl.value.trim() || !contentEl.value.trim()) {
-                alert('제목과 내용을 모두 입력해주세요.');
-                return;
-            }
-
-            if(!initialMockPosts[currentAsset]) {
-                initialMockPosts[currentAsset] = [];
-            }
-
-            initialMockPosts[currentAsset].unshift({
-                title: titleEl.value.trim(),
-                content: contentEl.value.trim(),
-                author: "유저(나)",
-                time: "방금 전"
-            });
-
-            titleEl.value = '';
-            contentEl.value = '';
-           
-            renderBoardList();
-            alert('작성하신 글이 해당 종목 게시판에 등록되었습니다!');
-        }
-
-        function filterAssets() {
-            const query = document.getElementById('integrated-search').value.toLowerCase();
-            document.querySelectorAll('.gemini-glow-container').forEach(card => {
-                const name = card.getAttribute('data-name').toLowerCase();
-                const ticker = card.getAttribute('data-ticker').toLowerCase();
-                card.style.display = (name.includes(query) || ticker.includes(query)) ? 'block' : 'none';
-            });
-        }
-
-        /* ────────────────────────────────────────────────────────
-           💡 [수정 완료] 국경 없는 배포 환경용 자동 주소 추적 웹소켓
-           ──────────────────────────────────────────────────────── */
-        try {
-            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            const socket = new WebSocket(protocol + window.location.host);
-           
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                assetList.forEach(a => {
-                    if (data[a.id]) {
-                        const priceEl = document.getElementById(`price-${a.id}`);
-                        const changeEl = document.getElementById(`change-${a.id}`);
-                        const wrapper = document.getElementById(`wrapper-${a.id}`);
-                       
-                        if(priceEl) priceEl.innerText = data[a.id].price.toLocaleString();
-                        if(changeEl) changeEl.innerText = (data[a.id].change >= 0 ? '+' : '') + data[a.id].change.toFixed(2) + '%';
-                       
-                        if(wrapper) {
-                            wrapper.classList.remove('up-style', 'down-style');
-                            wrapper.classList.add(data[a.id].change >= 0 ? 'up-style' : 'down-style');
-                        }
-                    }
-                });
-            };
-        } catch(e) {
-            console.log("실시간 서버 연결 스킵 - 디버그 데이터 우선 로드");
-        }
-    </script>
-</body>
-</html>
+                <!-- 2. 삼성전자 -->
+                <div class="gemini-glow-container up-style" id="wrapper-samsung" onclick="changeAsset('KRX:005930', '삼성전자')">
+                    <div class="stock-card">
+                        <div class="stock-header"><span class="stock-title">삼성전자 <span style="font-size:11px;color:var(--text-muted)">005930</span></span><span class="market-tag">코스피</span></div>
+                        <div class="stock-price-box"><span id="price-samsung">107,461</span><span class="price-change" id="change-samsung">+35.56%</span></div>
+위험도 레벨과열엔비디아 NVDA미국주식945.3+3.12%위험도 레벨주의 단계비트코인 BTC가상자산119,460,091+22.52%위험도 레벨보통SK하이닉스 000660코스피194,200-0.85%위험도 레벨안정 구간테슬라 실시간 토론방 의견 공유테슬라주주방금 전테슬라 FSD 규제 완화 호재 리스크 터졌네요투자 의견 등록취소등록하기function openM() { document.getElementById('postM').style.display = 'flex'; }function closeM() { document.getElementById('postM').style.display = 'none'; }function changeAsset(symbol, name) {document.querySelectorAll('.gemini-glow-container').forEach(el => el.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('tv_iframe').src = https://tradingview.com{encodeURIComponent(symbol)}&interval=D&theme=dark&style=1&timezone=Asia%2FSeoul&locale=ko;document.getElementById('selected-title').innerText = name;}const assetList = [{id:'tsla'},{id:'samsung'},{id:'nvda'},{id:'btc'},{id:'sk'}];try {const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';const socket = new WebSocket(protocol + window.location.host);socket.onmessage = (event) => {const data = JSON.parse(event.data);assetList.forEach(a => {if (data[a.id]) {const priceEl = document.getElementById(price-${a.id});const changeEl = document.getElementById(change-${a.id});const wrapper = document.getElementById(wrapper-${a.id});if(priceEl) priceEl.innerText = data[a.id].price.toLocaleString();if(changeEl) changeEl.innerText = (data[a.id].change >= 0 ? '+' : '') + data[a.id].change.toFixed(2) + '%';if(wrapper) {wrapper.classList.remove('up-style', 'down-style');wrapper.classList.add(data[a.id].change >= 0 ? 'up-style' : 'down-style');}}});};} catch(e) { console.log("실시간 서버 연결 스킵 - 디브이 데이터 우선 로드"); }
