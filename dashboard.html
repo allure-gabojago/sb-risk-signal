@@ -3,95 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SB RISK SIGNAL - 종목별 투자 위험 경보 커뮤니티</title>
+    <title>SB RISK SIGNAL</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        :root {
-            --bg-color: #06080c; --card-bg: #11151d; --card-hover: #151b26; --text-main: #ffffff; --text-muted: #9aa6b5;
-            --primary-accent: #ff3d00; --down-blue: #0076ff; --warning-yellow: #ffea00; --safe-green: #00e676;
-            --gemini-gradient: linear-gradient(135deg, #4285f4, #9b51e0, #e63946, #00f5d4, #4285f4);
-        }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Noto Sans KR', sans-serif; color: var(--text-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        .ticker-wrap { width: 100%; overflow: hidden; background: linear-gradient(90deg, #090d16 0%, #151c2a 50%, #090d16 100%); border-bottom: 2px solid #1f2635; padding: 14px 0; display: flex; position: relative; }
-        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker-move 50s linear infinite; }
-        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        :root { --bg: #06080c; --card: #11151d; --text: #ffffff; --muted: #9aa6b5; --red: #ff3d00; --blue: #0076ff; --yellow: #ffea00; --green: #00e676; --grad: linear-gradient(135deg, #4285f4, #9b51e0, #e63946, #00f5d4, #4285f4); }
+        body { margin: 0; background: var(--bg); font-family: 'Noto Sans KR', sans-serif; color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        .ticker-wrap { width: 100%; overflow: hidden; background: linear-gradient(90deg, #090d16 0%, #151c2a 50%, #090d16 100%); border-bottom: 2px solid #1f2635; padding: 14px 0; display: flex; }
+        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: t-move 50s linear infinite; }
+        @keyframes t-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
         .ticker-item { display: inline-flex; align-items: center; padding: 0 35px; font-size: 14px; font-weight: 900; border-right: 1px solid #2d384e; }
-        .ticker-item .cat { font-size: 10px; background: #222c3d; padding: 2px 5px; border-radius: 4px; margin-right: 8px; color: #00b0ff; font-weight: 700; }
-        .ticker-item.up { color: var(--primary-accent); } .ticker-item.down { color: var(--down-blue); }
+        .ticker-item .cat { font-size: 10px; background: #222c3d; padding: 2px 5px; border-radius: 4px; margin-right: 8px; color: #00b0ff; }
+        .ticker-item.up { color: var(--red); } .ticker-item.down { color: var(--blue); }
         header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(17, 21, 29, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1f2635; position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 26px; font-weight: 900; background: linear-gradient(45deg, #ff3d00, #0076ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
-        .main-search-wrapper { position: relative; display: flex; align-items: center; width: 320px; background: #1f2735; padding: 1px; border-radius: 10px; }
-        .main-search-input { width: 100%; background: #0b0f17; border: none; padding: 11px 14px 11px 40px; border-radius: 9px; color: #ffffff; outline: none; }
-        .main-search-wrapper i { position: absolute; left: 14px; color: #00b0ff; }
-        .login-trigger-btn { background: linear-gradient(135deg, #ff3d00 0%, #ba1a00 100%); color: white; border: none; padding: 10px 24px; font-weight: 700; border-radius: 30px; cursor: pointer; }
+        .search-box { position: relative; display: flex; align-items: center; width: 320px; background: #1f2735; padding: 1px; border-radius: 10px; }
+        .search-box input { width: 100%; background: #0b0f17; border: none; padding: 11px 14px 11px 40px; border-radius: 9px; color: #ffffff; outline: none; }
+        .search-box i { position: absolute; left: 14px; color: #00b0ff; }
+        .btn-log { background: linear-gradient(135deg, #ff3d00 0%, #ba1a00 100%); color: white; border: none; padding: 10px 24px; font-weight: 700; border-radius: 30px; cursor: pointer; }
         .main-wrapper { max-width: 1700px; margin: 30px auto; padding: 0 30px; display: grid; grid-template-columns: 5.8fr 4.2fr; gap: 30px; }
-        .section-title { font-size: 24px; font-weight: 900; margin-bottom: 20px; background: linear-gradient(45deg, #00b0ff, #ff3d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
-        .market-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; max-height: calc(100vh - 220px); overflow-y: auto; }
-        .gemini-glow-container { position: relative; border-radius: 16px; padding: 1.5px; background: rgba(34, 44, 61, 0.4); cursor: pointer; }
-        .gemini-glow-container:hover, .gemini-glow-container.active { background: var(--gemini-gradient); background-size: 200% 200%; animation: gemini-laser 4s linear infinite; }
-        @keyframes gemini-laser { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .stock-card { background: #11151d; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; }
-        .stock-header { display: flex; justify-content: space-between; align-items: center; }
-        .stock-title { font-size: 17px; font-weight: 900; color: #ffffff; }
-        .market-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #1f2635; color: #00b0ff; font-weight: 700; }
-        .stock-price-box { display: flex; justify-content: space-between; margin-top: 15px; font-size: 21px; font-weight: 900; }
-        .price-change { font-size: 14px; font-weight: 800; }
-        .risk-signal-bar { width: 100%; height: 5px; background: #1f2635; border-radius: 3px; margin-top: 12px; overflow: hidden; }
-        .risk-fill { height: 100%; }
-        .risk-label { font-size: 11px; font-weight: 700; margin-top: 6px; display: flex; justify-content: space-between; color: var(--text-muted); }
-        .up-style { color: var(--primary-accent); } .down-style { color: var(--down-blue); }
-        .right-section-wrapper { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 20px; }
-        .chart-container { height: 250px; background: #11151d; border-radius: 16px; border: 1px solid #1f2635; overflow: hidden; }
-        .forum-section { background: var(--card-bg); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; border: 1px solid #1f2635; height: calc(100vh - 430px); box-sizing: border-box; }
-        .forum-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2635; padding-bottom: 15px; margin-bottom: 15px; }
-        .forum-title { font-size: 18px; font-weight: 900; } .forum-title span { color: #00b0ff; }
-        .write-btn { background: #1f2635; border: 1px solid #313d54; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-        .board-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
-        .board-item { background: #151a24; border: 1px solid #202b3d; border-radius: 12px; padding: 16px; text-align: left; }
-        .item-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-        .item-user { font-weight: 700; color: #00b0ff; }
-        .item-title { font-size: 14px; font-weight: 700; line-height: 1.4; color: #ffffff; }
-        .write-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+        .title { font-size: 24px; font-weight: 900; margin-bottom: 20px; color: var(--red); display: flex; align-items: center; gap: 10px; }
+        .grid-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; max-height: calc(100vh - 220px); overflow-y: auto; }
+        .glow-box { position: relative; border-radius: 16px; padding: 1.5px; background: rgba(34, 44, 61, 0.4); cursor: pointer; }
+        .glow-box.active, .glow-box:hover { background: var(--grad); background-size: 200% 200%; animation: g-laser 4s linear infinite; }
+        @keyframes g-laser { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .card { background: #11151d; border-radius: 15px; padding: 18px; display: flex; flex-direction: column; }
+        .card-hd { display: flex; justify-content: space-between; align-items: center; font-size: 17px; font-weight: 900; }
+        .tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #1f2635; color: #00b0ff; }
+        .price-box { display: flex; justify-content: space-between; margin-top: 15px; font-size: 21px; font-weight: 900; }
+        .change { font-size: 14px; font-weight: 800; }
+        .bar-wrap { width: 100%; height: 5px; background: #1f2635; border-radius: 3px; margin-top: 12px; overflow: hidden; }
+        .bar { height: 100%; }
+        .lbl { font-size: 11px; font-weight: 700; margin-top: 6px; display: flex; justify-content: space-between; color: var(--muted); }
+        .up-style { color: var(--red); } .down-style { color: var(--blue); }
+        .right-wrap { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 20px; }
+        .chart-box { height: 250px; background: #11151d; border-radius: 16px; border: 1px solid #1f2635; overflow: hidden; }
+        .forum { background: var(--card); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; border: 1px solid #1f2635; height: calc(100vh - 430px); }
+        .forum-hd { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2635; padding-bottom: 15px; margin-bottom: 15px; font-size: 18px; font-weight: 900; }
+        .forum-hd span { color: #00b0ff; }
+        .btn-w { background: #1f2635; border: 1px solid #313d54; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
+        .item { background: #151a24; border: 1px solid #202b3d; border-radius: 12px; padding: 16px; text-align: left; }
+        .item-inf { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; font-weight: 700; }
+        .item-inf .user { color: #00b0ff; }
+        .item-txt { font-size: 14px; font-weight: 700; line-height: 1.4; color: #ffffff; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
         .modal-box { background: #11151d; border: 1px solid #2a354a; border-radius: 20px; padding: 30px; width: 420px; }
         .modal-box h3 { margin: 0 0 20px 0; font-weight: 900; }
-        .modal-input, .modal-textarea { width: 100%; background: #0b0f17; border: 1px solid #202b3d; color: white; border-radius: 8px; padding: 12px; box-sizing: border-box; margin-bottom: 15px; outline: none; font-family: inherit; }
-        .modal-textarea { height: 100px; resize: none; }
-        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
+        .m-in, .m-tx { width: 100%; background: #0b0f17; border: 1px solid #202b3d; color: white; border-radius: 8px; padding: 12px; box-sizing: border-box; margin-bottom: 15px; outline: none; font-family: inherit; }
+        .m-tx { height: 100px; resize: none; }
+        .m-btns { display: flex; justify-content: flex-end; gap: 10px; }
         .m-btn { padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; }
-        .m-btn.cancel { background: #222; color: #aaa; } .m-btn.submit { background: var(--primary-accent); color: white; }
+        .m-btn.c { background: #222; color: #aaa; } .m-btn.s { background: var(--red); color: white; }
     </style>
 </head>
 <body>
-    <div class="ticker-wrap">
-        <div class="ticker">
-            <div class="ticker-item up"><span class="cat">외환</span><span>AUD/USD</span>&nbsp;<span class="val">0.6580</span></div>
-            <div class="ticker-item up"><span class="cat">외환</span><span>USD/CAD</span>&nbsp;<span class="val">1.3520</span></div>
-            <div class="ticker-item down"><span class="cat">외환</span><span>USD/CHF</span>&nbsp;<span class="val">0.8840</span></div>
-            <div class="ticker-item up"><span class="cat">외환</span><span>USD/CNY</span>&nbsp;<span class="val">7.2340</span></div>
-        </div>
-    </div>
-    <header>
-        <div class="logo">SB RISK SIGNAL</div>
-        <div class="main-search-wrapper"><i class="fa-solid fa-magnifying-glass"></i><input type="text" class="main-search-input" placeholder="검색..."></div>
-        <button class="login-trigger-btn">간편 로그인</button>
-    </header>
+    <div class="ticker-wrap"><div class="ticker"><div class="ticker-item up"><span class="cat">외환</span><span>AUD/USD</span>&nbsp;<span class="val">0.6580</span></div><div class="ticker-item up"><span class="cat">외환</span><span>USD/CAD</span>&nbsp;<span class="val">1.3520</span></div><div class="ticker-item down"><span class="cat">외환</span><span>USD/CHF</span>&nbsp;<span class="val">0.8840</span></div><div class="ticker-item up"><span class="cat">외환</span><span>USD/CNY</span>&nbsp;<span class="val">7.2340</span></div></div></div>
+    <header><div class="logo">SB RISK SIGNAL</div><div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="검색..."></div><button class="btn-log">간편 로그인</button></header>
     <div class="main-wrapper">
         <section>
-            <div class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> 실시간 리스크 감지 마켓</div>
-            <div class="market-board-grid" id="market-grid">
-                <!-- 1. 테슬라 -->
-                <div class="gemini-glow-container up-style active" id="wrapper-tsla" onclick="changeAsset('NASDAQ:TSLA', '테슬라')">
-                    <div class="stock-card">
-                        <div class="stock-header"><span class="stock-title">테슬라 <span style="font-size:11px;color:var(--text-muted)">TSLA</span></span><span class="market-tag">미국주식</span></div>
-                        <div class="stock-price-box"><span id="price-tsla">253,024</span><span class="price-change" id="change-tsla">+48.34%</span></div>
-                        <div class="risk-signal-bar"><div class="risk-fill" style="width: 95%; background: var(--primary-accent);"></div></div>
-                        <div class="risk-label"><span>위험도 레벨</span><span style="color:var(--primary-accent)">과열/위험</span></div>
-                    </div>
-                </div>
-                <!-- 2. 삼성전자 -->
-                <div class="gemini-glow-container up-style" id="wrapper-samsung" onclick="changeAsset('KRX:005930', '삼성전자')">
-                    <div class="stock-card">
-                        <div class="stock-header"><span class="stock-title">삼성전자 <span style="font-size:11px;color:var(--text-muted)">005930</span></span><span class="market-tag">코스피</span></div>
-                        <div class="stock-price-box"><span id="price-samsung">107,461</span><span class="price-change" id="change-samsung">+35.56%</span></div>
-위험도 레벨과열엔비디아 NVDA미국주식945.3+3.12%위험도 레벨주의 단계비트코인 BTC가상자산119,460,091+22.52%위험도 레벨보통SK하이닉스 000660코스피194,200-0.85%위험도 레벨안정 구간테슬라 실시간 토론방 의견 공유테슬라주주방금 전테슬라 FSD 규제 완화 호재 리스크 터졌네요투자 의견 등록취소등록하기function openM() { document.getElementById('postM').style.display = 'flex'; }function closeM() { document.getElementById('postM').style.display = 'none'; }function changeAsset(symbol, name) {document.querySelectorAll('.gemini-glow-container').forEach(el => el.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('tv_iframe').src = https://tradingview.com{encodeURIComponent(symbol)}&interval=D&theme=dark&style=1&timezone=Asia%2FSeoul&locale=ko;document.getElementById('selected-title').innerText = name;}const assetList = [{id:'tsla'},{id:'samsung'},{id:'nvda'},{id:'btc'},{id:'sk'}];try {const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';const socket = new WebSocket(protocol + window.location.host);socket.onmessage = (event) => {const data = JSON.parse(event.data);assetList.forEach(a => {if (data[a.id]) {const priceEl = document.getElementById(price-${a.id});const changeEl = document.getElementById(change-${a.id});const wrapper = document.getElementById(wrapper-${a.id});if(priceEl) priceEl.innerText = data[a.id].price.toLocaleString();if(changeEl) changeEl.innerText = (data[a.id].change >= 0 ? '+' : '') + data[a.id].change.toFixed(2) + '%';if(wrapper) {wrapper.classList.remove('up-style', 'down-style');wrapper.classList.add(data[a.id].change >= 0 ? 'up-style' : 'down-style');}}});};} catch(e) { console.log("실시간 서버 연결 스킵 - 디브이 데이터 우선 로드"); }
+            <div class="title"><i class="fa-solid fa-triangle-exclamation"></i> 실시간 리스크 감지 마켓</div>
+            <div class="grid-board" id="market-grid">
+                <div class="glow-box up-style active" id="wrapper-tsla" onclick="changeAsset('NASDAQ:TSLA', '테슬라')"><div class="card"><div class="card-hd"><span>테슬라 <span style="font-size:11px;color:var(--muted)">TSLA</span></span><span class="tag">미국주식</span></div><div class="price-box"><span id="price-tsla">253,024</span><span class="change" id="change-tsla">+48.34%</span></div><div class="bar-wrap"><div class="bar" style="width: 95%; background: var(--red);"></div></div><div class="lbl"><span>위험도 레벨</span><span style="color:var(--red)">과열/위험</span></div></div></div>
+                <div class="glow-box up-style" id="wrapper-samsung" onclick="changeAsset('KRX:005930', '삼성전자')"><div class="card"><div class="card-hd"><span>삼성전자 <span style="font-size:11px;color:var(--muted)">005930</span></span><span class="tag">코스피</span></div><div class="price-box"><span id="price-samsung">107,461</span><span class="change" id="change-samsung">+35.56%</span></div><div class="bar-wrap"><div class="bar" style="width: 80%; background: var(--red);"></div></div><div class="lbl"><span>위험도 레벨</span><span style="color:var(--red)">과열</span></div></div></div>
+                <div class="glow-box up-style" id="wrapper-nvda" onclick="changeAsset('NASDAQ:NVDA', '엔비디아')"><div class="card"><div class="card-hd"><span>엔비디아 <span style="font-size:11px;color:var(--muted)">NVDA</span></span><span class="tag">미국주식</span></div><div class="price-box"><span id="price-nvda">945.3</span><span class="change" id="change-nvda">+3.12%</span></div><div class="bar-wrap"><div class="bar" style="width: 75%; background: var(--yellow);"></div></div><div class="lbl"><span>위험도 레벨</span><span style="color:var(--yellow)">주의 단계</span></div></div></div>
+                <div class="glow-box up-style" id="wrapper-btc" onclick="changeAsset('BINANCE:BTCUSDT', '비트코인')"><div class="card"><div class="card-hd"><span>비트코인 <span style="font-size:11px;color:var(--muted)">BTC</span></span><span class="tag">가상자산</span></div><div class="price-box"><span id="price-btc">119,460,091</span><span class="change" id="change-btc">+22.52%</span></div><div class="bar-wrap"><div class="bar" style="width: 70%; background: var(--yellow);"></div></div><div class="lbl"><span>위험도 레벨</span><span style="color:var(--yellow)">보통</span></div></div></div>
+SK하이닉스 000660코스피194,200-0.85%위험도 레벨안정 구간테슬라 실시간 토론방 의견 공유테슬라주주방금 전테슬라 FSD 규제 완화 호재 리스크 터졌네요투자 의견 등록취소등록하기function openM() { document.getElementById('postM').style.display = 'flex'; }function closeM() { document.getElementById('postM').style.display = 'none'; }function changeAsset(symbol, name) {document.querySelectorAll('.glow-box').forEach(el => el.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('tv_iframe').src = https://tradingview.com{encodeURIComponent(symbol)}&interval=D&theme=dark&style=1&timezone=Asia%2FSeoul&locale=ko;document.getElementById('selected-title').innerText = name;}const assetList = [{id:'tsla'},{id:'samsung'},{id:'nvda'},{id:'btc'},{id:'sk'}];try {const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';const socket = new WebSocket(protocol + window.location.host);socket.onmessage = (event) => {const data = JSON.parse(event.data);assetList.forEach(a => {if (data[a.id]) {const priceEl = document.getElementById(price-${a.id});const changeEl = document.getElementById(change-${a.id});const wrapper = document.getElementById(wrapper-${a.id});if(priceEl) priceEl.innerText = data[a.id].price.toLocaleString();if(changeEl) changeEl.innerText = (data[a.id].change >= 0 ? '+' : '') + data[a.id].change.toFixed(2) + '%';if(wrapper) {wrapper.classList.remove('up-style', 'down-style');wrapper.classList.add(data[a.id].change >= 0 ? 'up-style' : 'down-style');}}});};} catch(e) { console.log("실시간 서버 연결 스킵"); }
