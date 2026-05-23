@@ -48,7 +48,7 @@ setInterval(() => {
 
 wss.on('connection', (ws) => { ws.send(JSON.stringify(marketData)); });
 
-const PORT = 3000;
+const port = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`=======================================================`);
     console.log(` 투자 커뮤니티 백엔드 통합 엔진이 성공적으로 켜졌습니다.`);
