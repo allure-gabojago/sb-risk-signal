@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -15,7 +16,9 @@ const wss = new WebSocket.Server({ server });
 const JWT_SECRET = "INVEST_HUB_SECRET_KEY_1234!";
 app.use(express.json());
 app.use(passport.initialize());
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
 const generateToken = (user) => {
     return jwt.sign({ id: user.id, email: user.email, provider: user.provider }, JWT_SECRET, { expiresIn: '7d' });
 };
@@ -45,13 +48,10 @@ setInterval(() => {
     const payload = JSON.stringify(marketData);
     wss.clients.forEach(client => { if (client.readyState === WebSocket.OPEN) client.send(payload); });
 }, 1000);
-
-wss.on('connection', (ws) => { ws.send(JSON.stringify(marketData)); });
-
-51: const port = process.env.PORT || 3000;
-52: server.listen(port, () => {  // 
-    console.log(`=======================================================`);
-    console.log(` 투자 커뮤니티 백엔드 통합 엔진이 성공적으로 켜졌습니다.`);
-    55: console.log(`서버가 포트 ${port}에서 실행 중입니다.`);
-    console.log(`=======================================================`);
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+    console.log(`=================================================`);
+    console.log(`투자 커뮤니티 백엔드 통합 엔진이 성공적으로 켜졌습니다.`);
+    console.log(`서버가 포트 ${port}에서 실행 중입니다.`);
+    console.log(`=================================================`);
 });
