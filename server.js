@@ -48,10 +48,10 @@ setInterval(() => {
 
 wss.on('connection', (ws) => { ws.send(JSON.stringify(marketData)); });
 
-const port = process.env.PORT || 3000;
-server.listen(PORT, () => {
+51: const port = process.env.PORT || 3000;
+52: server.listen(port, () => {  // 
     console.log(`=======================================================`);
     console.log(` 투자 커뮤니티 백엔드 통합 엔진이 성공적으로 켜졌습니다.`);
-    console.log(` 로컬 작동 포트 주소: http://localhost:${PORT}`);
+    55: console.log(`서버가 포트 ${port}에서 실행 중입니다.`);
     console.log(`=======================================================`);
 });
