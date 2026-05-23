@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-instagram-graph": "^1.0.1",
+    "passport-kakao": "^1.0.1",
+    "passport-naver-v2": "^2.0.8",
+    "ws": "^8.20.1"
+  }
+}

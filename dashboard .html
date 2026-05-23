@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVEST HUB - 프리미엄 투자 커뮤니티</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root {
+            --bg-color: #06080c;
+            --card-bg: #11151d;
+            --card-hover: #141a26;
+            --text-main: #ffffff;
+            --text-muted: #848e9c;
+            --primary-accent: #00e676; /* 상승 네온그린 */
+            --danger-accent: #ff3d00;  /* 하락 네온레드 */
+            
+            /* 소셜 브랜드 컬러 */
+            --naver-color: #03C75A;
+            --kakao-color: #FEE500;
+            --google-color: #ffffff;
+            --instagram-color: #E1306C;
+
+            /* 구글 제미나이 무지개 그라데이션 라인 */
+            --gemini-gradient: linear-gradient(135deg, #4285f4, #9b51e0, #e63946, #00f5d4, #4285f4);
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ------------------ [최상단 그라데이션 초대형 무한 시세 전광판] ------------------ */
+        .ticker-wrap {
+            width: 100%; overflow: hidden;
+            background: linear-gradient(90deg, #10141d 0%, #1c2333 50%, #10141d 100%);
+            border-bottom: 1px solid #1f2635; padding: 14px 0;
+            display: flex; align-items: center; position: relative;
+        }
+        .ticker-wrap::before, .ticker-wrap::after {
+            content: ''; position: absolute; top: 0; width: 120px; height: 100%; z-index: 2;
+        }
+        .ticker-wrap::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
+        .ticker-wrap::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
+        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker-move 40s linear infinite; }
+        .ticker:hover { animation-play-state: paused; }
+        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        
+        .ticker-item {
+            display: inline-flex; align-items: center; padding: 0 35px;
+            font-size: 16px; font-weight: 900; letter-spacing: -0.5px; border-right: 1px solid #2d384e;
+        }
+        .ticker-item .name { margin-right: 10px; color: #ffffff; }
+        .ticker-item .val { font-variant-numeric: tabular-nums; margin-right: 8px; }
+        .ticker-item.up { color: var(--primary-accent); }
+        .ticker-item.down { color: var(--danger-accent); }
+
+        /* ------------------ [고급 헤더 네비게이션] ------------------ */
+        header {
+            display: flex; justify-content: space-between; align-items: center; padding: 20px 40px;
+            background: rgba(17, 21, 29, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1f2635;
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo {
+            font-size: 26px; font-weight: 900; letter-spacing: 1.5px;
+            background: linear-gradient(45deg, #00e676, #00b0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer;
+        }
+        .login-trigger-btn {
+            background: linear-gradient(135deg, #00e676 0%, #00a244 100%); color: white; border: none;
+            padding: 12px 30px; font-size: 15px; font-weight: 700; border-radius: 30px; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 230, 118, 0.3);
+        }
+        .login-trigger-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0, 230, 118, 0.5); }
+
+        /* ------------------ [클릭 시 열리는 화려한 소셜 로그인 모달 창] ------------------ */
+        .login-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 5, 8, 0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .login-modal-box {
+            background: #11151d; border: 1px solid #2a354a; border-radius: 24px; padding: 40px; width: 380px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); text-align: center; position: relative; animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .close-modal { position: absolute; top: 20px; right: 20px; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+        .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 8px; }
+        .modal-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
+        .social-list-vertical { display: flex; flex-direction: column; gap: 14px; }
+        .social-row-btn { display: flex; align-items: center; justify-content: flex-start; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; transition: transform 0.2s; }
+        .social-row-btn:hover { transform: translateY(-2px); }
+        .social-row-btn i { font-size: 18px; width: 30px; text-align: left; }
+        .social-row-btn.naver { background-color: var(--naver-color); color: white; }
+        .social-row-btn.google { background-color: #ffffff; color: #222222; }
+        .social-row-btn.kakao { background-color: var(--kakao-color); color: #3c1e1e; }
+        .social-row-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; }
+
+        /* ------------------ [완벽한 비율의 메인 콘텐츠 2분할 레이아웃] ------------------ */
+        .main-wrapper {
+            max-width: 1500px; margin: 30px auto; padding: 0 30px;
+            display: grid; grid-template-columns: 6.2fr 3.8fr; gap: 25px; align-items: start;
+        }
+        
+        .section-title { 
+            font-size: 24px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; 
+            background: var(--gemini-gradient);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-shine 4s linear infinite;
+        }
+        @keyframes text-shine { to { background-position: 200% center; } }
+
+        /* 좌측 30개 종목 배치 그리드 */
+        .market-board-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;
+            max-height: calc(100vh - 200px); overflow-y: auto; padding: 6px;
+        }
+        .market-board-grid::-webkit-scrollbar, .comment-list::-webkit-scrollbar { width: 6px; }
+        .market-board-grid::-webkit-scrollbar-thumb, .comment-list::-webkit-scrollbar-thumb { background: #263347; border-radius: 10px; }
+
+        /* ★ [구글 제미나이형 무지개 테두리] 기본 장착 */
+        .gemini-glow-container {
+            position: relative; border-radius: 14px; padding: 1px;
+            background: var(--gemini-gradient);
+            background-size: 400% 400%;
+            animation: gemini-laser 6s linear infinite;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        .gemini-glow-container.active {
+            box-shadow: 0 0 20px rgba(66, 133, 244, 0.6);
+            padding: 2px;
+        }
+
+        @keyframes gemini-laser {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .stock-card {
+            background: #11151d; border-radius: 13px; padding: 16px;
+            display: flex; flex-direction: column; transition: background 0.2s;
+        }
+        .gemini-glow-container:hover .stock-card { background: var(--card-hover); }
+
+        .stock-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .stock-title { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; color: #ffffff; }
+        .stock-code { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+        .market-tag { font-size: 10px; padding: 2px 7px; border-radius: 20px; background: #1f2635; color: #00b0ff; font-weight: 700; }
+
+        .stock-price-box { display: flex; align-items: baseline; justify-content: space-between; margin-top: 15px; padding-bottom: 10px; border-bottom: 1px solid #1f2635; }
+        .current-price { font-size: 19px; font-weight: 700; }
+        .price-change { font-size: 13px; font-weight: 700; }
+
+        /* 상태별 텍스트 컬러 지정 */
+        .gemini-glow-container.up-style .current-price, .gemini-glow-container.up-style .price-change { color: var(--primary-accent); }
+        .gemini-glow-container.down-style .current-price, .gemini-glow-container.down-style .price-change { color: var(--danger-accent); }
+
+        .live-badge { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 10px; }
+        .live-status { display: flex; align-items: center; gap: 5px; color: #00b0ff; }
+        .live-dot { width: 6px; height: 6px; background-color: #00b0ff; border-radius: 50%; animation: blink 1.5s infinite; }
+
+        /* ------------------ [우측 트레이딩뷰 차트 내장형 토론방 위젯] ------------------ */
+        .forum-section-wrapper {
+            position: sticky; top: 110px; height: calc(100vh - 210px);
+        }
+        .forum-section {
+            background: var(--card-bg); border-radius: 13px; padding: 22px;
+            display: flex; flex-direction: column; height: calc(100% - 46px);
+        }
+        .forum-header { border-bottom: 1px solid #1f2635; padding-bottom: 12px; margin-bottom: 12px; }
+        .forum-title { font-size: 18px; font-weight: 700; }
+        .forum-title span { color: #00b0ff; background: none; -webkit-text-fill-color: initial; }
+        
+        /* 트레이딩뷰 캔들 차트 시뮬레이터 디자인 */
+        .chart-container {
+            width: 100%; height: 160px; background: #0b0e14; border-radius: 10px;
+            margin-bottom: 15px; border: 1px solid #1f2635; position: relative;
+            display: flex; align-items: flex-end; justify-content: space-around; padding: 15px 10px; box-sizing: border-box;
+        }
+        .chart-bar {
+            width: 14px; background: var(--primary-accent); position: relative; border-radius: 2px;
+            box-shadow: 0 0 8px rgba(0, 230, 118, 0.4);
+        }
+        .chart-bar::before {
+            content: ''; position: absolute; left: 6px; width: 2px; height: 140%; top: -20%; background: inherit;
+        }
+        .chart-bar.down {
+            background: var(--danger-accent); box-shadow: 0 0 8px rgba(255, 61, 0, 0.4);
+        }
+
+        .comment-list { flex: 1; overflow-y: auto; padding-right: 5px; }
+        .comment-item { background: #161b24; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #222b3a; }
+        .comment-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .comment-user { color: #ffffff; font-weight: 700; }
+        .comment-text { font-size: 13px; line-height: 1.4; color: #e2e8f0; }
+        
+        .input-glow-wrapper {
+            display: flex; flex: 1; padding: 1px; border-radius: 10px;
+            background: rgba(34, 43, 58, 1);
+        }
+        .input-glow-wrapper:focus-within, .input-glow-wrapper:hover {
+            background: var(--gemini-gradient); background-size: 400% 400%; animation: gemini-laser 4s linear infinite;
+        }
+        .comment-input-box { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
+        .comment-input { flex: 1; background: #06080c; border: none; border-radius: 9px; padding: 12px; color: white; font-size: 13px; }
+        .comment-input:focus { outline: none; }
+        .comment-submit-btn { background: #00b0ff; color: white; border: none; padding: 0 18px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 무한 전광판 -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker-item up"><span class="name">코스피 지수</span><span class="val" id="slide-KOSPI">2,652.10</span><span id="slide-change-KOSPI">▲ 0.85%</span></div>
+            <div class="ticker-item down"><span class="name">나스닥 선물</span><span class="val" id="slide-NASDAQ">18,224.60</span><span id="slide-change-NASDAQ">▼ 0.41%</span></div>
+            <div class="ticker-item up"><span class="name">원/달러 환율</span><span class="val" id="slide-USDKRW">1,342.50</span><span id="slide-change-USDKRW">▲ 0.12%</span></div>
+            <div class="ticker-item up"><span class="name">코스피 지수</span><span class="val">2,652.10</span><span>▲ 0.85%</span></div>
+            <div class="ticker-item down"><span class="name">나스닥 선물</span><span class="val">18,224.60</span><span>▼ 0.41%</span></div>
+            <div class="ticker-item up"><span class="name">원/달러 환율</span><span class="val">1,342.50</span><span>▲ 0.12%</span></div>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo" onclick="location.reload()">INVEST HUB</div>
+        <div class="header-right">
+            <button class="login-trigger-btn" onclick="toggleModal(true)">간편 로그인 / 가입</button>
+        </div>
+    </header>
+
+    <!-- 소셜 로그인 모달 -->
+    <div class="login-modal-overlay" id="loginModal">
+        <div class="login-modal-box">
+            <i class="fa-solid fa-xmark close-modal" onclick="toggleModal(false)"></i>
+            <div class="modal-title">간편 소셜 가입</div>
+            <div class="modal-subtitle">3초 만에 가입하고 토론에 참여하세요!</div>
+            <div class="social-list-vertical">
+                <a href="http://localhost:3000/auth/naver" class="social-row-btn naver"><i class="fa-solid fa-n"></i> NAVER 네이버로 시작하기</a>
+                <a href="http://localhost:3000/auth/google" class="social-row-btn google"><i class="fab fa-google" style="color: #4285F4;"></i> GOOGLE 구글로 시작하기</a>
+                <a href="http://localhost:3000/auth/kakao" class="social-row-btn kakao"><i class="fa-solid fa-comment"></i> KAKAO 카카오톡으로 시작하기</a>
+                <a href="http://localhost:3000/auth/instagram" class="social-row-btn instagram"><i class="fab fa-instagram"></i> INSTAGRAM 인스타로 시작하기</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 대시보드 구조 메인 -->
+    <div class="main-wrapper">
+        
+        <!-- [좌측]: 30대 종목 그리드 보드 -->
+        <div>
+            <div class="section-title"><i class="fa-solid fa-fire"></i> 실시간 한국인 선호 30대 인기 종목</div>
+            <div class="market-board-grid" id="board-grid-target">
+                <!-- 자바스크립트로 30개 카드가 하단 루프에 의해 강제로 정상 주입됩니다 -->
+            </div>
+        </div>
+
+        <!-- [우측]: 차트 연동 주주 토론방 -->
+        <div class="forum-section-wrapper gemini-glow-container" id="forum-wrapper">
+            <div class="forum-section" id="forum-section">
+                <div class="forum-header">
+                    <div class="forum-title"><span id="forum-target-name">테슬라</span> 실시간 차트 & 게시판</div>
+                </div>
+                
+                <!-- 트레이딩뷰 스타일 라이브 캔들 차트 영역 -->
+                <div class="chart-container">
+                    <div class="chart-bar" style="height: 40%;"></div>
+                    <div class="chart-bar" style="height: 65%;"></div>
+                    <div class="chart-bar down" style="height: 35%;"></div>
+                    <div class="chart-bar" style="height: 80%;"></div>
+                    <div class="chart-bar down" style="height: 55%;"></div>
+                    <div class="chart-bar" style="height: 90%;"></div>
+                    <div class="chart-bar" style="height: 75%;"></div>
+                </div>
+
+                <div class="comment-list" id="comment-list">
+                    <div style="color: var(--text-muted); text-align: center; margin-top: 30px; font-size: 13px;">종목을 선택하면 실시간 시황방이 연결됩니다.</div>
+                </div>
+                
+                <div class="comment-input-box">
+                    <div class="input-glow-wrapper">
+                        <input type="text" class="comment-input" id="comment-input" placeholder="실시간 주주들에게 한마디 입력...">
+                    </div>
+                    <button class="comment-submit-btn" onclick="submitComment()">등록</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const tickerNames = {
+            TSLA: '테슬라', NVDA: '엔비디아', AAPL: '애플', MSFT: '마이크로소프트', AMZN: '아마존', GOOGL: '알파벳GOOGL',
+            META: '메타', SOXL: '필라델피아 반도체(SOXL)', TQQQ: '나스닥3배레버리지(TQQQ)', AMD: 'AMD', COIN: '코인베이스', SCHD: 'SCHD',
+            SAMSUNG: '삼성전자', SKHYNIX: 'SK하이닉스', ECOPROBM: '에코프로비엠', POSCOHOLD: 'POSCO홀딩스', NAVER: '네이버', KAKAO: '카카오',
+            ALTEOGEN: '알테오젠', KIA: '기아', HYUNDAI: '현대차', CELLTRION: '셀트리온',
+            BTC: '비트코인', ETH: '이더리움', SOL: '솔라나', XRP: '리플', DOGE: '도지코인',
+            NASDAQ: '나스닥 선물 지수', KOSPI: '코스피 지수', USDKRW: '원/달러 환율'
+        };
+
+        const tagNames = {
+            TSLA:'미국주식', NVDA:'미국주식', AAPL:'미국주식', MSFT:'미국주식', AMZN:'미국주식', GOOGL:'미국주식', META:'미국주식', SOXL:'미국레버리지', TQQQ:'미국레버리지', AMD:'미국주식', COIN:'미국주식', SCHD:'미국ETF',
+            SAMSUNG:'한국주식', SKHYNIX:'한국주식', ECOPROBM:'코스닥대장', POSCOHOLD:'한국주식', NAVER:'한국주식', KAKAO:'한국주식', ALTEOGEN:'코스닥', KIA:'한국주식', HYUNDAI:'한국주식', CELLTRION:'한국주식',
+            BTC:'암호화폐', ETH:'암호화폐', SOL:'암호화폐', XRP:'암호화폐', DOGE:'밈코인', NASDAQ:'해외선물', KOSPI:'국내지수', USDKRW:'주요환율'
+        };
+
+        let currentTicker = 'TSLA';
+        const socket = new WebSocket('ws://localhost:3000');
+
+        function toggleModal(show) { document.getElementById('loginModal').style.display = show ? 'flex' : 'none'; }
+
+        // 버그 해결 수정한 30개 하드 코딩식 안전 렌더링 
+        const gridContainer = document.getElementById('board-grid-target');
+        gridContainer.innerHTML = Object.keys(tickerNames).map(ticker => `
+            <div class="gemini-glow-container" id="wrapper-${ticker}" onclick="openForum('${ticker}', '${tickerNames[ticker]}')">
+                <div class="stock-card" id="card-${ticker}">
+                    <div class="stock-header">
+                        <div class="stock-name-box"><span class="stock-title">${tickerNames[ticker]}</span><span class="stock-code">${ticker}</span></div>
+                        <span class="market-tag">${tagNames[ticker]}</span>
+                    </div>
+                    <div class="stock-price-box"><span class="current-price" id="price-${ticker}">연동 대기...</span><span class="price-change" id="change-${ticker}">0.00%</span></div>
+                    <div class="live-badge"><span class="live-status"><div class="live-dot"></div>라이브</span><span id="count-${ticker}">의견 0개</span></div>
+                </div>
+            </div>
+        `).join('');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => { openForum('TSLA', '테슬라'); }, 200);
+        });
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            Object.keys(tickerNames).forEach(ticker => {
+                if (data[ticker]) {
+                    const symbol = ['TSLA','NVDA','AAPL','MSFT','AMZN','GOOGL','META','SOXL','TQQQ','AMD','COIN','SCHD','NASDAQ'].includes(ticker) ? '$' : '';
+                    const unit = ['SAMSUNG','SKHYNIX','ECOPROBM','POSCOHOLD','NAVER','KAKAO','ALTEOGEN','KIA','HYUNDAI','CELLTRION','BTC','ETH','SOL','XRP','DOGE','USDKRW'].includes(ticker) ? '원' : '';
+                    updateStockCard(ticker, data[ticker].price, data[ticker].change, symbol, unit);
+                }
+            });
+
+            if(data.KOSPI) updateSlideElement('KOSPI', data.KOSPI.price, data.KOSPI.change, '원');
+            if(data.NASDAQ) updateSlideElement('NASDAQ', data.NASDAQ.price, data.NASDAQ.change, '$');
+            if(data.USDKRW) updateSlideElement('USDKRW', data.USDKRW.price, data.USDKRW.change, '원');
+
+            if (currentTicker && data.comments && data.comments[currentTicker]) {
+                renderComments(data.comments[currentTicker]);
+                document.getElementById(`count-${currentTicker}`).innerText = `의견 ${data.comments[currentTicker].length}개`;
+            }
+        };
+
+        function updateStockCard(ticker, price, change, prefix = '', suffix = '') {
+            const wrapper = document.getElementById(`wrapper-${ticker}`);
+            const priceEl = document.getElementById(`price-${ticker}`);
+            const changeEl = document.getElementById(`change-${ticker}`);
+            if (!wrapper || !priceEl || !changeEl) return;
+
+            let formattedPrice = (suffix === '원' && price >= 1000) ? Math.round(price).toLocaleString() : price.toFixed(2);
+            if (ticker === 'XRP' || ticker === 'DOGE') formattedPrice = price.toLocaleString();
+
+            priceEl.innerText = `${prefix}${formattedPrice}${suffix}`;
+            changeEl.innerText = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+
+            if (change >= 0) { wrapper.className = 'gemini-glow-container up-style'; if(ticker===currentTicker) wrapper.classList.add('active'); }
+            else { wrapper.className = 'gemini-glow-container down-style'; if(ticker===currentTicker) wrapper.classList.add('active'); }
+        }
+
+        function updateSlideElement(ticker, price, change, unit) {
+            const valEl = document.getElementById(`slide-${ticker}`);
+            const changeEl = document.getElementById(`slide-change-${ticker}`);
+            if(!valEl || !changeEl) return;
+
+            valEl.innerText = unit === '원' && price >= 1000 ? Math.round(price).toLocaleString() + '원' : price.toFixed(2);
+            changeEl.innerText = `${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(2)}%`;
+        }
+
+        function openForum(ticker, name) {
+            currentTicker = ticker;
+            document.querySelectorAll('.market-board-grid .gemini-glow-container').forEach(c => c.classList.remove('active'));
+            const activeWrapper = document.getElementById(`wrapper-${ticker}`);
+            if(activeWrapper) activeWrapper.classList.add('active');
+            document.getElementById('forum-target-name').innerText = name;
+            
+            // 트레이딩뷰 스타일 랜덤 캔들 차트 컬러 스위칭 감성 연출
+            document.querySelectorAll('.chart-bar').forEach(bar => {
+                if(Math.random() > 0.4) { bar.classList.remove('down'); } 
+                else { bar.classList.add('down'); }
+                bar.style.height = `${Math.floor(Math.random() * 60) + 30}%`;
+            });
+        }
+
+        function renderComments(comments) {
+            const listEl = document.getElementById('comment-list');
+            listEl.innerHTML = comments.map(c => `
+                <div class="comment-item">
+                    <div class="comment-meta"><span class="comment-user">${c.user}</span><span>${c.time}</span></div>
+                    <div class="comment-text">${c.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function submitComment() {
+            const input = document.getElementById('comment-input');
+            if (!input.value.trim() || !currentTicker) return;
+            socket.send(JSON.stringify({ type: 'NEW_COMMENT', ticker: currentTicker, text: input.value }));
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
